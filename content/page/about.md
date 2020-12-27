@@ -1,6 +1,6 @@
 ---
 title: About me
-subtitle: Nooooobi-wan Kenobi, Vulnerability Research, fuzzing, more fuzzing and moreeee fuzzing
+subtitle: Noooooobi-wan Kenobi, Vulnerability Research, fuzzing, more fuzzing and moreeee fuzzing
 comments: false
 ---
 
