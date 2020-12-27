@@ -1,0 +1,11 @@
+{
+  "build": {
+    "env": {
+    }
+  },
+  "rewrites": [
+    { "source": "/papers", "destination": "https://papers.fuzzing.science" },
+    { "source": "/papers/(.*)", "destination": "https://papers.fuzzing.science/$1" }
+  ],
+  "trailingSlash": true
+}
