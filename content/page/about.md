@@ -6,8 +6,8 @@ comments: false
 
 Welcome!
 
-I'm Chaithu (ant4g0nist). I have been working for past couple of years focused mostly on remote targets. 
-I love building fuzzing frameworks, and research, focused mostly on macOS/iOS. 
+I'm Chaithu (ant4g0nist). I have been doing security research for past couple of years focused mostly on fuzzing stuff. 
+I work mostly on building fuzzing frameworks, for my research, focused mostly on macOS/iOS. 
 Recently I started working on Android, low-level stuff, emulations and hypervisors.
 
 Most of the source code is available at Github: https://github.com/ant4g0nist.
