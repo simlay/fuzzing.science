@@ -15,13 +15,13 @@ date: 2021-06-19
 
 ## Introduction aka how it all started...
 
-Initally, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. Then I started checking if someone already has implemented this, but I couldn't find any public implementations. So, to achieve this, I dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. After tinkering a while, I decided to patch QEMU and libFuzzer. In doing so, I built `Sloth` framework using which I can fuzz  Android Native libraires.
+Initially, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. I checked if someone has already worked on this, but I couldn't find any such public implementations. So, to achieve this, I decided to patch QEMU and libFuzzer and dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. In doing so, I built `Sloth`🦥 framework using which I can fuzz Android Native libraries.
 
-> We will make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) on `x86_64` host.
+> I make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries.
 
 ## QEMU Internals
 
-I'm just gonna give a really basic introduction to QEMU internals and it's source code (PS: I'm no expert in QEMU 🧐). I'm sure there are awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/QEMU_blog/)). 
+I'm just gonna give a really basic introduction to QEMU internals and it's source code (PS: I'm no expert in QEMU 🧐). I'm sure there are other awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/QEMU_blog/)). 
 
 * Let's clone the source of latest QEMU (QEMU 5.1.0) from github using the following commands
 
@@ -32,7 +32,7 @@ I'm just gonna give a really basic introduction to QEMU internals and it's sourc
 ➜  qemu > git submodule update
 ```
 
-> When we compile, QUME, the main folder that's resposible for loading ELF, cpu execution loop, syscall handlers is `linux-user`. Folder looks something like this (stripped irrelevant directories from the output):
+> When we compile, QUME, the main folder that's resposible for loading ELF into memory, cpu execution loop and syscall handlers is `linux-user`. Folder looks something like this (stripped irrelevant directories from the output):
 
 ```sh
 ➜  > cd qemu/linux-user/
@@ -40,42 +40,16 @@ I'm just gonna give a really basic introduction to QEMU internals and it's sourc
 .
 |____linuxload.c
 |____uname.h
-|____host
-| |____arm
-| | |____hostdep.h
-| | |____safe-syscall.inc.S
-| |____aarch64
-| | |____hostdep.h
-| | |____safe-syscall.inc.S
 |____mmap.c
 |____exit.c
 |____fd-trans.h
 |____elfload.c
-|____target_flat.h
-|____signal-common.h
-|____trace-events
 |____syscall.c
-|____meson.build
-|____strace.c
-|____errno_defs.h
 |____trace.h
 |____main.c                         
-|____flatload.c
-|____safe-syscall.S
-|____uname.c
-|____flat.h
-|____strace.list
 |____syscall_types.h
 |____cpu_loop-common.h
 |____syscall_defs.h
-|____generic
-| |____termbits.h
-| |____fcntl.h
-| |____signal.h
-| |____sockbits.h
-|____vm86.c
-|____signal.c
-|____linux_loop.h
 |____arm
 | |____cpu_loop.c
 | |____target_structs.h
@@ -87,15 +61,7 @@ I'm just gonna give a really basic introduction to QEMU internals and it's sourc
 | | |____fpopcode.h
 | | |____fpa11_cprt.c
 | | |____double_cpdo.c
-| | |____single_cpdo.c
-| | |____fpa11.c
-| | |____fpa11_cpdt.c
-| | |____meson.build
-| | |____extended_cpdo.c
-| | |____fpopcode.c
-| | |____fpsr.h
-| | |____fpa11.h
-| | |____fpa11.inl
+...
 | |____target_syscall.h
 | |____target_fcntl.h
 | |____meson.build
@@ -122,8 +88,10 @@ I'm just gonna give a really basic introduction to QEMU internals and it's sourc
 |____semihost.c
 |____qemu.h
 |____fd-trans.c
-....
+...
 ```
+
+Here, `main.c` has the `main` function implementation for `linux-user`, `syscall.c` is responsible for syscall implementation, `elfload.c` is responsible for parsing and loading ELF into memory and `cpu_loop.c` inside `aarch64` folder is responsible for cpu_exec of `aarch64` architecture.
 
 ### QEMU Internals - The Tiny Code Generator (TCG)
 
