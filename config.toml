@@ -77,7 +77,7 @@ pygmentsCodefencesGuessSyntax = true
 # [[menu.main]]
 #    parent = "blog"
 #    name = "Fuzzing Android Native libraries with libFuzzer & Qemu"
-#    url = "page/sloth"
+#    url = "blog/Fuzzing Android Native libraries with libFuzzer & Qemu"
 #    weight = 1
 
 # [[menu.main]]

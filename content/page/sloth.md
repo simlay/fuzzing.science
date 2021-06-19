@@ -409,7 +409,6 @@ docker build -t $image .
 docker run --rm -v `pwd`/:/home -v `pwd`/resources:/android -it $image bash
 ~~~
 <br />
-
 I made a simple [library](https://gist.github.com/ant4g0nist/8d761d105f45033f3c704dfaea6e765a) to fuzz.
 <br />
 ~~~
@@ -423,7 +422,6 @@ root@4558d8a05c92:/android/examples/Sample/jni# ls lib/
 fuzz.cpp  fuzz.h  include
 ~~~
 <br />
-
 Target library:
 <br />
 ~~~
@@ -472,9 +470,7 @@ extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 }
 ~~~
 <br />
-
 Compile the target and copy libBooFuzz.so and boofuzz to `/android/rootfs/system/lib64/` and `/android/rootfs/` respectively.
-
 <br />
 ~~~
 root@4558d8a05c92:/android/examples/Sample/jni# make
@@ -522,7 +518,9 @@ There might be big boo-boo I didn't think of. Please let me know if there's any 
 - https://googleprojectzero.blogspot.com/search?q=skcodec
 
 ## todo
+- [ ] make sure coverage is working
 - [ ] Add support for ASAN
+- [ ] Check if it works with -fork
 - [ ] Improve Code Coverage/Add extra instrumentation.
 - [ ] Add CMP coverage
 - [ ] Add ASAN
