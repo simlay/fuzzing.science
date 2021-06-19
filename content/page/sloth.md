@@ -516,7 +516,7 @@ There might be big boo-boo I didn't think of. Please let me know if there's any 
 - https://abiondo.me/2018/09/21/improving-afl-qemu-mode/
 - https://airbus-seclab.github.io/qemu_blog/
 - http://people.redhat.com/pbonzini/qemu-test-doc/_build/html/topics/Translator-Internals.html
-- https://googleprojectzero.blogspot.com/search?q=skcodec
+- https://googleprojectzero.blogspot.com/2020/07/mms-exploit-part-1-introduction-to-qmage.html
 
 ## todo
 - [ ] Make sure coverage is working
