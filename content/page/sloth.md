@@ -2,6 +2,8 @@
 # title: About me
 subtitle: Fuzzing Android Native libraries with libFuzzer & Qemu
 comments: false
+tags: [fuzzing,libfuzzer,qemu,sloth]
+categories: [development, fuzzing]
 ---
 
 My goal was to build a tool to fuzz Android native libraries with libfuzzer with binary-only code-coverage. 
