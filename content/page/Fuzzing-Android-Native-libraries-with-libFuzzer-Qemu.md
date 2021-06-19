@@ -1,6 +1,6 @@
 ---
-title: Fuzzing Android Native libraries with libFuzzer + Qemu
-# subtitle: Fuzzing Android Native libraries with libFuzzer + Qemu
+title: Fuzzing Android Native libraries with libFuzzer + QEMU
+# subtitle: Fuzzing Android Native libraries with libFuzzer + QEMU
 comments: false
 draft: false
 bigimg: [{src: "/img/exploitable.png", desc: "exploitable"}]
@@ -9,21 +9,21 @@ categories: [development, fuzzing]
 date: 2021-06-19
 ---
 
-# Fuzzing Android Native libraries with libFuzzer + Qemu 🦥
+# Fuzzing Android Native libraries with libFuzzer + QEMU 🦥
 
-**TL;DR** In this blog post, I will go through the process of how I built a new framework called `Sloth` 🦥, using which I was able to fuzz Android Native libraries with libFuzzer and Qemu. You will see me talking about Qemu internals, and showcasing my patches. Finally you will see the running demo of my `Sloth` framework to perform the fuzzing for `Skia` library.
+**TL;DR** In this blog post, I will go through the process of how I built a new framework called `Sloth` 🦥, using which I was able to fuzz Android Native libraries with libFuzzer and QEMU. You will see me talking about QEMU internals, and showcasing my patches. Finally you will see the running demo of my `Sloth` framework to perform the fuzzing for `Skia` library.
 
 ## Introduction aka how it all started...
 
-Initally, my goal was to build a tool to fuzz Android native libraries with libfuzzer and qemu to perform binary-only code-coverage fuzzing. Then I started checking if someone already has implemented this, but I couldn't find any public implementations. So, to achieve this, I dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. After tinkering a while, I decided to patch Qemu and libFuzzer. In doing so, I built `Sloth` framework using which I can fuzz  Android Native libraires.
+Initally, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. Then I started checking if someone already has implemented this, but I couldn't find any public implementations. So, to achieve this, I dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. After tinkering a while, I decided to patch QEMU and libFuzzer. In doing so, I built `Sloth` framework using which I can fuzz  Android Native libraires.
 
 > We will make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) on `x86_64` host.
 
-## Qemu Internals
+## QEMU Internals
 
-I'm just gonna give a really basic introduction to QEMU internals and it's source code (PS: I'm no expert in Qemu 🧐). I'm sure there are awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/qemu_blog/)). 
+I'm just gonna give a really basic introduction to QEMU internals and it's source code (PS: I'm no expert in QEMU 🧐). I'm sure there are awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/QEMU_blog/)). 
 
-* Let's clone the source of latest Qemu (qemu 5.1.0) from github using the following commands
+* Let's clone the source of latest QEMU (QEMU 5.1.0) from github using the following commands
 
 ```sh
 ➜  git clone --depth 1 --branch v5.1.0 https://github.com/qemu/qemu
@@ -125,7 +125,7 @@ I'm just gonna give a really basic introduction to QEMU internals and it's sourc
 ....
 ```
 
-### Qemu Internals - The Tiny Code Generator (TCG)
+### QEMU Internals - The Tiny Code Generator (TCG)
 
 The Tiny Code Generator (TCG) is responsible to transform target instructions (the processor being emulated, in our case `aarch64`) into host instructions (the processor executing QEMU itself, in our case `x86_64`). A TCG frontend lifts native target instructions into an architecture-independent intermediate representation (IR). A TCG backend then lowers the IR into native host instructions. The translation is done on-the-fly during emulation at the basic block level.
 
@@ -179,7 +179,7 @@ The Tiny Code Generator (TCG) is responsible to transform target instructions (t
 
 * High level execution flow of QUME looks something like
 
-![Qemu linux-user flow](../../img/qemu_linux-user_main.png)
+![QEMU linux-user flow](../../img/qemu_linux-user_main.png)
 
 * The interesting function to start with from the above flow is [`cpu_exec`](https://github.com/qemu/qemu/blob/v6.0.0/accel/tcg/cpu-exec.c#L715)
 
@@ -216,9 +216,9 @@ int cpu_exec(CPUState *cpu)
     cpu_exec_exit(cpu);    
 ```
 
-> In `cpu_exec`, QEMU first tries to look for existing TBs inside TB Cache, by calling `tb_find`. If there's no entry for the current location, it generates a new one with [`tb_gen_code`](https://github.com/qemu/qemu/blob/v6.0.0/accel/tcg/translate-all.c#L1844). When a TB is found, QEMU runs it with `cpu_loop_exec_tb` which in short calls `cpu_tb_exec` and then `tcg_qemu_tb_exec`. At this point our target code has been translated to host code, QEMU can run it directly on the host CPU. 
+> In `cpu_exec`, QEMU first tries to look for existing TBs inside TB Cache, by calling `tb_find`. If there's no entry for the current location, it generates a new one with [`tb_gen_code`](https://github.com/qemu/qemu/blob/v6.0.0/accel/tcg/translate-all.c#L1844). When a TB is found, QEMU runs it with `cpu_loop_exec_tb` which in short calls `cpu_tb_exec` and then `tcg_QEMU_tb_exec`. At this point our target code has been translated to host code, QEMU can run it directly on the host CPU.
 
-## Qemu Patches
+## QEMU Patches
 
 Perfect!
 
@@ -226,7 +226,7 @@ With this basic understanding of QUME, we know that instrumentation for code-cov
 
 <img src="../../img/cpu_exec.png" alt="TB-Code-Coverage" width="200"/>
 
-I made use of the `afl_maybe_log` and `afl_gen_trace` code from [aflplusplus](https://github.com/AFLplusplus/qemuafl/blob/master/accel/tcg/translate-all.c#L71). I did not add probabilistic instrumentation implemendted in aflplusplus for now.
+I made use of the `afl_maybe_log` and `afl_gen_trace` code from [aflplusplus](https://github.com/AFLplusplus/QEMUafl/blob/master/accel/tcg/translate-all.c#L71). I did not add probabilistic instrumentation implemendted in aflplusplus for now.
 
 Added the following code to `accel/tcg/translate-all.c` file, and call `afl_gen_trace` function inside `tb_gen_code` before `trace_translate_block` function call. (PS: QEMU provides trace-events to trace all the TB executions using `trace_translate_block`)
 
@@ -287,7 +287,7 @@ DEF_HELPER_FLAGS_1(afl_maybe_log, TCG_CALL_NO_RWG, void, tl)
 ```c
 import <the target library here>
 
-extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 {
     targetFunction(Data, Size);
 }
@@ -305,9 +305,9 @@ To keep the fuzzing in-process, I patched few things:
 - execute `cpu_loop`.
 - reset TB Cache `tb_flush(cpu);` to get rid of the above `env->end_addr`
 - set `env->addr_end` to 0.
-- fetches pointer to `libQemuFuzzerTestOneInput` from loaded target library
+- fetches pointer to `libQEMUFuzzerTestOneInput` from loaded target library
 
-> By the time the execution reaches the last step in the above flow, all the dependent libraries of the ELF should be loaded in memory. Now I fetch the pointer to `libQemuFuzzerTestOneInput` from the harness library by calling the `libQemuDlsym` function and pass it to `libFuzzerStart`.
+> By the time the execution reaches the last step in the above flow, all the dependent libraries of the ELF should be loaded in memory. Now I fetch the pointer to `libQEMUFuzzerTestOneInput` from the harness library by calling the `libQEMUDlsym` function and pass it to `libFuzzerStart`.
 
 * Changes to `main.c` code looks something like this
 
@@ -324,7 +324,7 @@ To keep the fuzzing in-process, I patched few things:
     tb_flush(cpu);
     env->addr_end = 0;
 
-    target_addr = libQemuDlsym("libQemuFuzzerTestOneInput");
+    target_addr = libQEMUDlsym("libQEMUFuzzerTestOneInput");
 
     // const uint8_t *h = NULL;
     argc = argc-1;
@@ -333,7 +333,7 @@ To keep the fuzzing in-process, I patched few things:
 ...
 ```
 
-* And inside `LLVMFuzzerTestOneInput`, I just assign the required registers to point to Data and Size and call `libQemuFuzzerTestOneInput`
+* And inside `LLVMFuzzerTestOneInput`, I just assign the required registers to point to Data and Size and call `libQEMUFuzzerTestOneInput`
 
 ```c
 int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) 
@@ -355,7 +355,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 
 <img src="../../img/sloth_folder_structure.png" alt="Sloth-folder-structure" width="400"/>
 
-* In `sloth.c`, i just call `libQemuInit` from QUME to start execution
+* In `sloth.c`, i just call `libQEMUInit` from QUME to start execution
 
 ```c
 int main(int argc, char* argv[], char* envp[])
@@ -366,14 +366,14 @@ int main(int argc, char* argv[], char* envp[])
     memset(afl_area_ptr, 0, sizeof(uint8_t)* MAP_SIZE);
 
     //start fuzzing
-    libQemuInit(argc, argv, envp);
+    libQEMUInit(argc, argv, envp);
     ...
 }
 ```
 
 ## Sloth Demo - 🦥
 
-> `Sloth` is a fuzzing framework I made to fuzz Android Native libraries with libFuzzer and Qemu 
+> `Sloth` is a fuzzing framework I made to fuzz Android Native libraries with libFuzzer and QEMU 
 
 * Build the Sloth docker image
 
@@ -412,7 +412,7 @@ root@4558d8a05c92:/android/examples/Sample/jni# cat lib/fuzz.cpp
 
 #include "fuzz.h"
 
-extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 
 	if (Size <5 && Size > 4096)
 		return 0;
@@ -494,7 +494,7 @@ Final code for the port of `SKCodecFuzzer` to `Sloth` looks something like this:
 #include "include/core/SkString.h"
 #include "include/core/SkPngChunkReader.h"
 
-extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 
 	if (Size <1 && Size > 4096)
 		return 0;
