@@ -60,7 +60,6 @@ Let's clone the source of latest Qemu (qemu 5.1.0) from github.
 ➜  qemu > git submodule update
 ~~~
 <br />
-<br />
 When we compile, QUME, the main folder that's resposible for loading ELF, cpu execution loop, syscall handlers is `linux-user`. Folder looks something like this (stripped irrelevant directories from the output):
 <br />
 ~~~
@@ -154,10 +153,8 @@ When we compile, QUME, the main folder that's resposible for loading ELF, cpu ex
 ....
 ~~~
 <br />
-<br />
 The Tiny Code Generator (TCG) is responsible to transform target instructions (the processor being emulated, in our case `aarch64`) into host instructions (the processor executing QEMU itself, in our case x86_64). A TCG frontend lifts native target instructions into an architecture-independent intermediate representation (IR). A TCG backend then lowers the IR into native host instructions. The translation is done on-the-fly during emulation at the basic block level.
 <br />
-
 The code for the TCG resides in `qemu/tcg/`. 
 <br />
 ~~~
@@ -204,7 +201,6 @@ The code for the TCG resides in `qemu/tcg/`.
 |____tcg-ldst.c.inc
 ~~~
 <br />
-
 The code I patched in QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) recides inside `linux-user` folder. The execution of QUME starts from `main.c` (`int main(int argc, char **argv, char **envp)`) inside `qemu/linux-user/`. 
 
 High level execution flow of QUME looks something like:
@@ -246,7 +242,6 @@ int cpu_exec(CPUState *cpu)
     cpu_exec_exit(cpu);    
 ~~~
 <br />
-
 In `cpu_exec`, QEMU first tries to look for existing TBs inside TB Cache, by calling `tb_find`. If there's no entry for the current location, it generates a new one with [`tb_gen_code`](https://github.com/qemu/qemu/blob/v6.0.0/accel/tcg/translate-all.c#L1844). When a TB is found, QEMU runs it with `cpu_loop_exec_tb` which in short calls `cpu_tb_exec` and then `tcg_qemu_tb_exec`. At this point our target code has been translated to host code, QEMU can run it directly on the host CPU. 
 <br />
 
@@ -305,17 +300,13 @@ static void afl_gen_trace(target_ulong cur_loc) {
   tcg_temp_free(cur_loc_v);
 }
 ~~~
-
 <br />
-
 Add the following line to `accel/tcg/tcg-runtime.h`
 <br />
-
 ~~~
 DEF_HELPER_FLAGS_1(afl_maybe_log, TCG_CALL_NO_RWG, void, tl)
 ~~~
 <br />
-
 Okay, so I want my final harness to be something like this
 <br />
 ~~~
