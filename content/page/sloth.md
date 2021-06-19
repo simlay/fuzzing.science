@@ -155,6 +155,7 @@ When we compile, QUME, the main folder that's resposible for loading ELF, cpu ex
 <br />
 The Tiny Code Generator (TCG) is responsible to transform target instructions (the processor being emulated, in our case `aarch64`) into host instructions (the processor executing QEMU itself, in our case x86_64). A TCG frontend lifts native target instructions into an architecture-independent intermediate representation (IR). A TCG backend then lowers the IR into native host instructions. The translation is done on-the-fly during emulation at the basic block level.
 <br />
+
 The code for the TCG resides in `qemu/tcg/`. 
 <br />
 ~~~
