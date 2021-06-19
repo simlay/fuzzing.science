@@ -11,7 +11,7 @@ comments: false
 My goal was to build a tool to fuzz Android native libraries with libfuzzer with binary-only code-coverage. 
 In this post I will show how I achieved that with Qemu and libFuzzer and managed to fuzz Android native library on x86_64 host with binary-only code-coverage and build a tool called `Sloth`. We will make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔).
 
-Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j00ru](https://twitter.com/j00ru) [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to the new `Sloth`. 
+Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j00ru](https://twitter.com/j00ru), [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer), to the new `Sloth`. 
 
 Final code for the port of `SKCodecFuzzer` to `Sloth` looks something like this:
 <br />
