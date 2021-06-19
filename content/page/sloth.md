@@ -9,7 +9,7 @@ comments: false
 # Fuzzing Android Native libraries with libFuzzer & Qemu
 
 My goal was to build a tool to fuzz Android native libraries with libfuzzer with binary-only code-coverage. 
-In this post I will show how I achieved that with Qemu and libFuzzer and managed to fuzz Android native library on x86_64 host with binary-only code-coverage and build a tool called `Sloth`. 
+In this post I will show how I achieved that with Qemu and libFuzzer and managed to fuzz Android native library on x86_64 host with binary-only code-coverage and build a tool called `Sloth`. We will make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔)
 
 Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j00ru](https://twitter.com/j00ru) [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to the new `Sloth`. 
 
@@ -49,7 +49,7 @@ extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 
 ## Qemu Internals
 
-I'm just gonna give a really basic introduction to QEMU source code (I'm no expert in Qemu 🧐). I'm sure there are awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/qemu_blog/))  
+I'm just gonna give a really basic introduction to QEMU source code (I'm no expert in Qemu 🧐). I'm sure there are awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/qemu_blog/)). 
 
 Let's clone the source of latest Qemu (qemu 5.1.0) from github.
 <br />
@@ -201,7 +201,7 @@ The code for the TCG resides in `qemu/tcg/`.
 |____tcg-ldst.c.inc
 ~~~
 <br />
-The code I patched in QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) recides inside `linux-user` folder. The execution of QUME starts from `main.c` (`int main(int argc, char **argv, char **envp)`) inside `qemu/linux-user/`. 
+The code I patched in QEMU’s user-mode emulation recides inside `linux-user` folder. The execution of QUME starts from `main.c` (`int main(int argc, char **argv, char **envp)`) inside `qemu/linux-user/`. 
 
 High level execution flow of QUME looks something like:
 
@@ -518,7 +518,7 @@ There might be big boo-boo I didn't think of. Please let me know if there's any 
 - https://googleprojectzero.blogspot.com/search?q=skcodec
 
 ## todo
-- [ ] make sure coverage is working
+- [ ] Make sure coverage is working
 - [ ] Add support for ASAN
 - [ ] Check if it works with -fork
 - [ ] Improve Code Coverage/Add extra instrumentation.
