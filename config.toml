@@ -46,11 +46,9 @@ pygmentsCodefencesGuessSyntax = true
 [Author]
   name = "ant4g0nist"
   website = "fuzzing.science"
-#  email = "ant4g0nist@fuzzing.science"
   github = "ant4g0nist"
-#  bitbucket = "ant4g0nist"
   twitter = "ant4g0nist"
-# reddit = "ant4g0nist"
+  reddit = "ant4g0nist"
   instagram = "ant4g0nist"
 
 [[menu.main]]
@@ -69,28 +67,11 @@ pygmentsCodefencesGuessSyntax = true
     url = "page/about/"
     weight = 3
 
-# [[menu.main]]
-    # identifier = "samples"
-    # name = "Samples"
-    # weight = 2
-
 [[menu.main]]
     parent = "blog"
     name = "Fuzzing Android Native libraries with libFuzzer & Qemu"
     url = "page/fuzzing-android-native-libraries-with-libfuzzer-qemu"
     weight = 1
-
-# [[menu.main]]
-    # parent = "samples"
-    # name = "Math Sample"
-    # url = "post/2017-03-05-math-sample"
-    # weight = 2
-
-# [[menu.main]]
-    # parent = "samples"
-    # name = "Code Sample"
-    # url = "post/2016-03-08-code-sample"
-    # weight = 3
 
 [[menu.main]]
     name = "Tags"
