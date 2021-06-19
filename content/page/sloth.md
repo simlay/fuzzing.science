@@ -6,10 +6,14 @@ tags: [fuzzing,libfuzzer,qemu,sloth]
 categories: [development, fuzzing]
 ---
 
+# Fuzzing Android Native libraries with libFuzzer & Qemu
+
 My goal was to build a tool to fuzz Android native libraries with libfuzzer with binary-only code-coverage. 
 In this post I will show how I achieved that with Qemu and libFuzzer and managed to fuzz Android native library on x86_64 host with binary-only code-coverage and build a tool called `Sloth`. 
 
-Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j00ru](https://twitter.com/j00ru) [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to the new `Sloth`. Port of `SKCodecFuzzer` to `Sloth` looks something like this:
+Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j00ru](https://twitter.com/j00ru) [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to the new `Sloth`. 
+
+Final code for the port of `SKCodecFuzzer` to `Sloth` looks something like this:
 
 ~~~
 #define SK_BUILD_FOR_ANDROID
@@ -42,7 +46,7 @@ extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 }
 ~~~
 
-# Qemu
+## Qemu Internals
 
 I'm just gonna give a really basic introduction to QEMU source code (I'm no expert in Qemu 🧐). I'm sure there are awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/qemu_blog/))  
 
@@ -239,11 +243,13 @@ int cpu_exec(CPUState *cpu)
 
 In `cpu_exec`, QEMU first tries to look for existing TBs inside TB Cache, by calling `tb_find`. If there's no entry for the current location, it generates a new one with [`tb_gen_code`](https://github.com/qemu/qemu/blob/v6.0.0/accel/tcg/translate-all.c#L1844). When a TB is found, QEMU runs it with `cpu_loop_exec_tb` which in short calls `cpu_tb_exec` and then `tcg_qemu_tb_exec`. At this point our target code has been translated to host code, QEMU can run it directly on the host CPU. 
 
-With this basic understanding of QUME, we know that instrumentation for code-coverage fuzzing can be achived by making use of TBs inside `tb_gen_code`.
+## Patches
+
+Perfect. With this basic understanding of QUME, we know that instrumentation for code-coverage fuzzing can be achived by making use of TBs inside `tb_gen_code`.
 
 <img src="../../img/cpu_exec.png" alt="TB-Code-Coverage" width="200"/>
 
-Perfect. I made use of the `afl_maybe_log` and `afl_gen_trace` code from [aflplusplus](https://github.com/AFLplusplus/qemuafl/blob/master/accel/tcg/translate-all.c#L71). I did not add probabilistic instrumentation implemendted in aflplusplus for now. 
+I made use of the `afl_maybe_log` and `afl_gen_trace` code from [aflplusplus](https://github.com/AFLplusplus/qemuafl/blob/master/accel/tcg/translate-all.c#L71). I did not add probabilistic instrumentation implemendted in aflplusplus for now. 
 
 Added the following code to `accel/tcg/translate-all.c` file and call `afl_gen_trace` function inside `tb_gen_code` before `trace_translate_block` function call. (QEMU provides trace-events to trace all the TB executions using `trace_translate_block`)
 
@@ -322,7 +328,7 @@ To keep the fuzzing in-process, I patched few things:
 - execute `cpu_loop`.
 - reset TB Cache `tb_flush(cpu);` to get rid of the above `env->end_addr`
 - set `env->addr_end` to 0.
--  fetches pointer to `libQemuFuzzerTestOneInput` from loaded target library
+- fetches pointer to `libQemuFuzzerTestOneInput` from loaded target library
 
 By the time the execution reaches the last step in the above flow, all the dependent libraries of the ELF should be loaded in memory. Now I fetch the pointer to `libQemuFuzzerTestOneInput` from the harness library by calling the `libQemuDlsym` function and pass it to `libFuzzerStart`.
 
@@ -349,7 +355,7 @@ Changes to `main.c` code looks something like this:
 ...
 ~~~
 
-And inside `LLVMFuzzerTestOneInput`, i just assign the required registers to point to Data and Size and call `libQemuFuzzerTestOneInput`.
+And inside `LLVMFuzzerTestOneInput`, I just assign the required registers to point to Data and Size and call `libQemuFuzzerTestOneInput`.
 
 ~~~
 int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) 
@@ -387,7 +393,7 @@ int main(int argc, char* argv[], char* envp[])
 }
 ~~~
 
-Okay. Let's try it out.
+## Sloth Demo
 
 Build the Sloth docker image:
 ~~~
@@ -490,6 +496,7 @@ Finally, I can fuzz:
 
 Yayyy, it works !!!! 🧐🧐🧐🧐🧐🕺🕺🕺🕺
 
+## Skia fuzzer - Sloth
 And, as promised, tried it on the port of [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to [sloth](https://gist.github.com/ant4g0nist/cce049c9764015c383ae960ed2cbbd2a)
 
 <img src="../../img/skia_fuzz.png" alt="Skia SKCodecFuzzer"/>
