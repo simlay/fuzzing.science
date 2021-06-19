@@ -2,8 +2,8 @@
 #title: Fuzzing Android Native libraries with libFuzzer & Qemu
 subtitle: Fuzzing Android Native libraries with libFuzzer & Qemu
 comments: false
-tags: [fuzzing,libfuzzer,qemu,sloth]
-categories: [development, fuzzing]
+# tags: [fuzzing,libfuzzer,qemu,sloth]
+# categories: [development, fuzzing]
 ---
 
 # Fuzzing Android Native libraries with libFuzzer & Qemu
