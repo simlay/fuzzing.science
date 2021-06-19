@@ -6,6 +6,7 @@ draft: false
 bigimg: [{src: "/img/exploitable.png", desc: "exploitable"}]
 tags: [fuzzing, libfuzzer, qemu, sloth]
 categories: [development, fuzzing]
+date: 2021-06-19
 ---
 
 # Fuzzing Android Native libraries with libFuzzer + Qemu 🦥
