@@ -199,7 +199,7 @@ The code I patched in QEMU’s user-mode emulation (`qemu-linux-user`. let's cal
 
 High level execution flow of QUME looks something like:
 
-![Qemu linux-user flow](img/qemu_linux-user_main.png)
+![Qemu linux-user flow](/img/qemu_linux-user_main.png)
 
 The interesting function to start with from the above flow is [`cpu_exec`](https://github.com/qemu/qemu/blob/v6.0.0/accel/tcg/cpu-exec.c#L715)
 
@@ -241,7 +241,7 @@ In `cpu_exec`, QEMU first tries to look for existing TBs inside TB Cache, by cal
 
 With this basic understanding of QUME, we know that instrumentation for code-coverage fuzzing can be achived by making use of TBs inside `tb_gen_code`.
 
-<img src="img/cpu_exec.png" alt="TB-Code-Coverage" width="200"/>
+<img src="/img/cpu_exec.png" alt="TB-Code-Coverage" width="200"/>
 
 Perfect. I made use of the `afl_maybe_log` and `afl_gen_trace` code from [aflplusplus](https://github.com/AFLplusplus/qemuafl/blob/master/accel/tcg/translate-all.c#L71). I did not add probabilistic instrumentation implemendted in aflplusplus for now. 
 
@@ -369,7 +369,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size)
 
 Final folder structure of Sloth:
 
-<img src="img/sloth_folder_structure.png" alt="Sloth-folder-structure" width="400"/>
+<img src="/img/sloth_folder_structure.png" alt="Sloth-folder-structure" width="400"/>
 
 In `sloth.c`, i just call `libQemuInit` from QUME to start execution.
 
@@ -486,13 +486,13 @@ root@4558d8a05c92:/android/examples/Sample/jni# cp ../libs/arm64-v8a/libBooFuzz.
 
 Finally, I can fuzz:
 
-<img src="img/slot_boofuzz_example.png" alt="sloth sample boofuzz crash"/>
+<img src="/img/slot_boofuzz_example.png" alt="sloth sample boofuzz crash"/>
 
 Yayyy, it works !!!! 🧐🧐🧐🧐🧐🕺🕺🕺🕺
 
 And, as promised, tried it on the port of [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to [sloth](https://gist.github.com/ant4g0nist/cce049c9764015c383ae960ed2cbbd2a)
 
-<img src="img/skia_fuzz.png" alt="Skia SKCodecFuzzer"/>
+<img src="/img/skia_fuzz.png" alt="Skia SKCodecFuzzer"/>
 
 #### PS
 There might be big boo-boo I didn't think of. Please let me know if there's any improvements that need to be done or anything I missed out to handle on TB cache. 🙏🏻
