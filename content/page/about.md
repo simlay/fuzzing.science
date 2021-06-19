@@ -2,6 +2,7 @@
 title: About me
 subtitle: Noooooobi-wan Kenobi, Vulnerability Research, fuzzing, more fuzzing and moreeee fuzzing
 comments: false
+date: 2021-06-19
 ---
 
 Hey!
