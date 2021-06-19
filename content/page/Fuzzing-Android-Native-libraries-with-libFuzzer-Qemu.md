@@ -11,7 +11,7 @@ date: 2021-06-19
 
 # Fuzzing Android Native libraries with libFuzzer + QEMU 🦥
 
-**TL;DR** In this blog post, I will go through the process of how I built a new framework called `Sloth` 🦥, using which I was able to fuzz Android Native libraries with libFuzzer and QEMU. You will see me talking about QEMU internals, and showcasing my patches. Finally you will see the running demo of my `Sloth` framework to perform the fuzzing for `Skia` library.
+**TL;DR** In this blog post, I will go through the process of why and how I built a new framework called `Sloth` 🦥, using which I was able to fuzz Android Native libraries with libFuzzer and QEMU. You will see me talking about QEMU internals, and showcasing my patches. Finally you will see the running demo of my `Sloth` framework to perform the fuzzing for `Skia` library.
 
 ## Introduction aka how it all started...
 
