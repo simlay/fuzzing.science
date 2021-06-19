@@ -77,7 +77,7 @@ pygmentsCodefencesGuessSyntax = true
 [[menu.main]]
     parent = "blog"
     name = "Fuzzing Android Native libraries with libFuzzer & Qemu"
-    url = "blog/Fuzzing Android Native libraries with libFuzzer Qemu"
+    url = "blog/Fuzzing_Android_Native_libraries_with_libFuzzer_Qemu"
     weight = 1
 
 # [[menu.main]]
