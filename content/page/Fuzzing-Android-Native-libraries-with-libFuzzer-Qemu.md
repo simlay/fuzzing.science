@@ -530,7 +530,6 @@ There might be big boo-boo I didn't think of. Please let me know if there's any 
 ## To-Do
 
 - [ ] Make sure coverage is working
-- [ ] Add support for ASAN
 - [ ] Check if it works with -fork
 - [ ] Improve Code Coverage/Add extra instrumentation.
 - [ ] Add CMP coverage
