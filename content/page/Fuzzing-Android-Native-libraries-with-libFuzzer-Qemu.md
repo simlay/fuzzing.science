@@ -511,7 +511,10 @@ extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 }
 ```
 
+Coverage seems to be working fineeee 🕺🕺
+
 <img src="../../img/skia_fuzz.png" alt="Skia SKCodecFuzzer"/>
+
 
 #### PS
 
