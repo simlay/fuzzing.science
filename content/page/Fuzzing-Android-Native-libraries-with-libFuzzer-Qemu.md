@@ -451,9 +451,17 @@ Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j
 Final code for the port of `SKCodecFuzzer` to `Sloth` looks something like this:
 
 ```c
+//just a quick port of the SKCodecFuzzer harness by j00ru
+
 #define SK_BUILD_FOR_ANDROID
 
-...
+#include <stdio.h>
+#include <stdint.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 #include "fuzz.h"
 #include "include/codec/SkAndroidCodec.h"
@@ -462,7 +470,7 @@ Final code for the port of `SKCodecFuzzer` to `Sloth` looks something like this:
 #include "include/core/SkString.h"
 #include "include/core/SkPngChunkReader.h"
 
-extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+extern "C" int libQemuFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 
 	if (Size <1 && Size > 4096)
 		return 0;
@@ -473,15 +481,35 @@ extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 	sk_sp<SkData> data = SkData::MakeFromMalloc(DataMa, Size);
 	SkCodec::Result result;
 
-    ...
+	std::unique_ptr<SkAndroidCodec> codec = SkAndroidCodec::MakeFromData(std::move(data), nullptr);
+
+	if (!codec) {
+		return 0;
+	}
+
+	SkImageInfo info = codec->getInfo();
+	const int width = info.width();
+	const int height = info.height();
+
+	SkColorType decodeColorType = kN32_SkColorType;
+	SkBitmap::HeapAllocator defaultAllocator;
+	SkBitmap::Allocator* decodeAllocator = &defaultAllocator;
+	SkAlphaType alphaType = codec->computeOutputAlphaType(/*requireUnpremultiplied=*/false);
+	const SkImageInfo decodeInfo =
+		SkImageInfo::Make(width, height, decodeColorType, alphaType);
+
+	SkImageInfo bitmapInfo = decodeInfo;
+	SkBitmap decodingBitmap;
+	if (!decodingBitmap.setInfo(bitmapInfo) ||
+		!decodingBitmap.tryAllocPixels(decodeAllocator)) {
+		return 1;
+	}
 
 	result = codec->getAndroidPixels(decodeInfo, decodingBitmap.getPixels(), decodingBitmap.rowBytes());
 
 	return 0;
 }
 ```
-
-* And, as promised, tried it on the port of [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer) to [sloth](https://gist.github.com/ant4g0nist/cce049c9764015c383ae960ed2cbbd2a)
 
 <img src="../../img/skia_fuzz.png" alt="Skia SKCodecFuzzer"/>
 
