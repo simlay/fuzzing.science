@@ -17,7 +17,16 @@ date: 2021-06-19
 
 Initially, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. I checked if someone has already worked on this, but I couldn't find any such public implementations. So, to achieve this, I decided to patch QEMU and libFuzzer and dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. In doing so, I built `Sloth`🦥 framework which I can fuzz Android Native libraries.
 
-> I make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries.
+> I want to make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries and I want my final harness to be something like this
+
+```c
+import <the target library here>
+
+extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
+{
+    targetFunction(Data, Size);
+}
+```
 
 ## QEMU Internals
 
@@ -250,16 +259,6 @@ static void afl_gen_trace(target_ulong cur_loc) {
 DEF_HELPER_FLAGS_1(afl_maybe_log, TCG_CALL_NO_RWG, void, tl)
 ```
 
-* Okay, so I want my final harness to be something like this
-
-```c
-import <the target library here>
-
-extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
-{
-    targetFunction(Data, Size);
-}
-```
 
 Since libFuzzer is in-process, I would ideally want to launch QEMU only once per process and fuzz the target function from target library in-process. To make it work, I had to adjust the elf loader in QUME. In an ELF loader, when there's an interpreter, the Loader first jumps to the start of `interp_entry`. After loading all the dependent libraries, the execution is set to `elf_entry`. After finishing this execution, QUME exits.
 
