@@ -17,7 +17,7 @@ date: 2021-06-19
 
 Initially, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. I checked if someone has already worked on this, but I couldn't find any such public implementations. So, to achieve this, I decided to patch QEMU and libFuzzer and dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. In doing so, I built `Sloth`🦥 framework which I can fuzz Android Native libraries.
 
-> I make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries.
+> I make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries.
 
 ## QEMU Internals
 
