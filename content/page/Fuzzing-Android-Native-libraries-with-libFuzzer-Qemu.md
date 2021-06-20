@@ -30,7 +30,7 @@ extern "C" int libQEMUFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
 
 ## QEMU Internals
 
-I'm just gonna give a really basic introduction to QEMU internals and it's source code (PS: I'm no expert in QEMU 🧐). I'm sure there are other awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/QEMU_blog/)). 
+I'm just gonna give a really basic introduction to QEMU internals and it's source code (PS: I'm no expert in QEMU 🧐). I'm sure there are other awesome resources related to QEMU internals (eg: [QEMU internals by airbus-seclab](https://airbus-seclab.github.io/qemu_blog/)). 
 
 * Let's clone the source of latest QEMU (QEMU 5.1.0) from github using the following commands
 
