@@ -11,11 +11,11 @@ date: 2021-06-19
 
 # Fuzzing Android Native libraries with libFuzzer + QEMU 🦥
 
-**TL;DR** In this blog post, I will go through the process of why and how I built a new framework called `Sloth` 🦥, using which I was able to fuzz Android Native libraries with libFuzzer and QEMU. You will see me talking about QEMU internals, and showcasing my patches. Finally you will see the running demo of my `Sloth` framework to perform the fuzzing for `Skia` library.
+**TL;DR** In this blog post, I will go through the process of why and how I built a new framework called `Sloth` 🦥, using which, I was able to fuzz Android Native libraries with libFuzzer and QEMU. You will see me talking about QEMU internals, and showcasing my patches. Finally you will see the running demo of my `Sloth` framework to perform the fuzzing for `Skia` library.
 
 ## Introduction aka how it all started...
 
-Initially, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. I checked if someone has already worked on this, but I couldn't find any such public implementations. So, to achieve this, I decided to patch QEMU and libFuzzer and dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. In doing so, I built `Sloth`🦥 framework using which I can fuzz Android Native libraries.
+Initially, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. I checked if someone has already worked on this, but I couldn't find any such public implementations. So, to achieve this, I decided to patch QEMU and libFuzzer and dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. In doing so, I built `Sloth`🦥 framework which I can fuzz Android Native libraries.
 
 > I make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this as QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries.
 
