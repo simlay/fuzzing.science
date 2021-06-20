@@ -17,7 +17,7 @@ date: 2021-06-19
 
 Initially, my goal was to build a tool to fuzz Android native libraries with libfuzzer and QEMU to perform binary-only code-coverage fuzzing. I checked if someone has already worked on this, but I couldn't find any such public implementations. So, to achieve this, I decided to patch QEMU and libFuzzer and dug deep into some internals of QEMU, QEMU TCG, ELF loaders, libFuzzer's custom coverage. In doing so, I built `Sloth`🦥 framework which I can fuzz Android Native libraries.
 
-> I want to make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries and I want my final harness to be something like this
+> I want to make use of QEMU’s user-mode emulation (`qemu-linux-user`. let's call this QUME 🤔) on `x86_64` host to emulate aarch64 Android libraries and I want my final harness to be look like this
 
 ```c
 import <the target library here>
@@ -154,7 +154,7 @@ The Tiny Code Generator (TCG) is responsible to transform target instructions (t
 
 > The code I patched in QEMU’s user-mode emulation recides inside `linux-user` folder. The execution of QUME starts from `main.c` (`int main(int argc, char **argv, char **envp)`) inside `qemu/linux-user/`. 
 
-* High level execution flow of QUME looks something like
+* High level execution flow of QUME:
 
 ![QEMU linux-user flow](../../img/qemu_linux-user_main.png)
 
@@ -276,7 +276,7 @@ To keep the fuzzing in-process, I patched few things:
 
 > By the time the execution reaches the last step in the above flow, all the dependent libraries of the ELF should be loaded in memory. Now I fetch the pointer to `libQEMUFuzzerTestOneInput` from the harness library by calling the `libQEMUDlsym` function and pass it to `libFuzzerStart`.
 
-* Changes to `main.c` code looks something like this
+* Changes to `main.c` code:
 
 ```c
 ...
@@ -447,7 +447,7 @@ Yayyy, it works !!!! 🧐🧐🧐🧐🧐🕺🕺🕺🕺
 
 Bonus, I also tried to fuzz Skia Image parsing by porting the harness made by [j00ru](https://twitter.com/j00ru), [SKCodecFuzzer](https://github.com/googleprojectzero/SkCodecFuzzer), to the new `Sloth`. 
 
-Final code for the port of `SKCodecFuzzer` to `Sloth` looks something like this:
+Final code for the port of `SKCodecFuzzer` to `Sloth`:
 
 ```c
 //just a quick port of the SKCodecFuzzer harness by j00ru
