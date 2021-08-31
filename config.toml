@@ -1,61 +1,163 @@
 baseurl = "https://fuzzing.science"
 DefaultContentLanguage = "en"
-title = "Fuzzing Science"
-theme = "beautifulhugo"
+theme = "LoveIt"
 metaDataFormat = "yaml"
 pygmentsStyle = "trac"
 pygmentsUseClasses = true
 pygmentsCodeFences = true
 pygmentsCodefencesGuessSyntax = true
-#pygmentsUseClassic = true
-#pygmentOptions = "linenos=inline"
-#disqusShortname = "XXX"
-#googleAnalytics = "XXX"
 
-[Params]
-  homeTitle = "Fuzzing Science" # Set a different text for the header on the home page
-  subtitle = "Personal space for learning & sharing about Fuzzing, Vulnerability Research..."
-  mainSections = ["post","posts"]
-  logo = "img/avatar-icon.jpg" # Expecting square dimensions
-  favicon = "img/avatar-icon.jpg"
-  dateFormat = "January 2, 2006"
-  commit = false
-  rss = true
-  comments = true
-  readingTime = true
-  wordCount = true
-  useHLJS = true
-  socialShare = true
-  delayDisqus = true
-  showRelatedPosts = true
-#  hideAuthor = true
-#  gcse = "012345678901234567890:abcdefghijk" # Get your code from google.com/cse. Make sure to go to "Look and Feel" and change Layout to "Full Width" and Theme to "Classic"
+[params]
+  version = "0.2.X"
 
-#[[Params.bigimg]]
-#  src = "img/triangle.jpg"
-#  desc = "Triangle"
-#[[Params.bigimg]]
-#  src = "img/sphere.jpg"
-#  desc = "Sphere"
-#  # position: see values of CSS background-position.
-#  position = "center top"
-#[[Params.bigimg]]
-#  src = "img/hexagon.jpg"
-#  desc = "Hexagon"
+  #  App icon config
+  [params.app]
+    # optional site title override for the app when added to an iOS home screen or Android launcher
+    title = "Fuzzing Science"
+    # whether to omit favicon resource links
+    noFavicon = false
+    # modern SVG favicon to use in place of older style .png and .ico files
+    svgFavicon = ""
+    # Android browser theme color
+    themeColor = "#ffffff"
+    # Safari mask icon color
+    iconColor = "#5bbad5"
+    # Windows v8-10 tile color
+    tileColor = "#da532c"
+    
+  # Header config
+  [params.header]
+    # desktop header mode ("fixed", "normal", "auto")
+    desktopMode = "fixed"
+    # mobile header mode ("fixed", "normal", "auto")
+    mobileMode = "auto"
+    #  Header title config
+    [params.header.title]
+      logo = "/img/logo.jpg"
+      name = " Fuzzing Science"
+      typeit = false
 
-[Author]
+  # Footer config
+  [params.footer]
+    enable = true
+    hugo = false
+    copyright = true
+    author = true
+    since = 2020
+
+  #  Section (all posts) page config
+  [params.section]
+    # special amount of posts in each section page
+    paginate = 5
+    # date format (month and day)
+    dateFormat = "01-02"
+    # amount of RSS pages
+    rss = 10
+
+  # Home page config
+  [params.home]
+    #  amount of RSS pages
+    rss = 10
+    # Home page profile
+    [params.home.profile]
+      enable = true
+      # Gravatar Email for preferred avatar in home page
+      gravatarEmail = ""
+      # URL of avatar shown in home page
+      avatarURL = "/img/logo.jpg"
+      #  title shown in home page (HTML format is supported)
+      title = "Fuzzing Science"
+      typeit = true
+      # whether to show social links
+      social = true
+    # Home page posts
+    [params.home.posts]
+      enable = true
+      # special amount of posts in each home posts page
+      paginate = 6
+      #  replaced with hiddenFromHomePage in params.page
+      # default behavior when you don't set "hiddenFromHomePage" in front matter
+      defaultHiddenFromHomePage = false
+
+[params.page]
+    hiddenFromHomePage = false
+    hiddenFromSearch = false
+    twemoji = false
+    lightgallery = false
+    ruby = true
+    fraction = true
+    fontawesome = true
+    linkToMarkdown = true
+    rssFullText = false
+
+    [params.page.code]
+      copy = true
+      maxShownLines = 10
+
+    [params.page.share]
+      enable = true
+      Twitter = true
+      Linkedin = true
+      HackerNews = true
+      Reddit = true
+    
+
+[author]
+  name = "ant4g0nist"
+
+[params.social]
   name = "ant4g0nist"
   website = "fuzzing.science"
   github = "ant4g0nist"
   twitter = "ant4g0nist"
-  reddit = "ant4g0nist"
-  instagram = "ant4g0nist"
+
+
+# Markup related config in Hugo
+[markup]
+  # Syntax Highlighting
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
+    # false is a necessary configuration
+    # (https://github.com/dillonzq/LoveIt/issues/158)
+    noClasses = false
+  # Goldmark is from Hugo 0.60 the default library used for Markdown
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      definitionList = true
+      footnote = true
+      linkify = true
+      strikethrough = true
+      table = true
+      taskList = true
+      typographer = true
+    [markup.goldmark.renderer]
+      # whether to use HTML tags directly in the document
+      unsafe = true
+
+  # Table Of Contents settings
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 6
+
+
+# Sitemap config
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
+[Permalinks]
+  # posts = ":year/:month/:filename"
+  posts = "page/:filename"
 
 [[menu.main]]
-    name = "Blog"
-    url = ""
+    name = "Posts"
+    url = "/posts"
     weight = 1
-    identifier = "blog"
+    identifier = "page"
 
 [[menu.main]]
     name = "Vulnerable-kext"
@@ -65,15 +167,4 @@ pygmentsCodefencesGuessSyntax = true
 [[menu.main]]
     name = "About"
     url = "page/about/"
-    weight = 3
-
-[[menu.main]]
-    parent = "blog"
-    name = "Fuzzing Android Native libraries with libFuzzer & Qemu"
-    url = "page/fuzzing-android-native-libraries-with-libfuzzer-qemu"
-    weight = 1
-
-[[menu.main]]
-    name = "Tags"
-    url = "tags"
     weight = 3
