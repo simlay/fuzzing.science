@@ -45,7 +45,6 @@ pygmentsCodefencesGuessSyntax = true
     author = true
     since = 2020
 
-
   # Home page config
   [params.home]
     # Home page profile
@@ -82,7 +81,7 @@ pygmentsCodefencesGuessSyntax = true
 
     [params.page.code]
       copy = true
-      maxShownLines = 10
+      maxShownLines = 45
 
     [params.page.share]
       enable = true
