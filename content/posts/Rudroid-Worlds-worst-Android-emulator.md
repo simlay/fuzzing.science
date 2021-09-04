@@ -2,8 +2,8 @@
 title: Rudroid - Writing the World's worst Android Emulator in Rust 🦀
 comments: false
 draft: false
-featuredImage: "/img/strich.png"
-featuredImagePreview: "/img/strich.png"
+featuredImage: "/img/strich.jpg"
+featuredImagePreview: "/img/strich.jpg"
 tags: [fuzzing, emulator, rudroid, rust]
 categories: [fuzzing, emulator, rudroid, rust]
 date: 2021-08-31
