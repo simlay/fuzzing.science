@@ -1131,6 +1131,11 @@ You see where I am going? Just kept doing this for few more syscalls till I saw 
 
 Uffff. That's a long post. Hope it's useful to someone. Please [DM](https://twitter.com/ant4g0nist) me if I made any booboo.
 
+&nbsp;
+
+Don't "panic" if the code sucks! Code is here: https://github.com/ant4g0nist/rudroid
+
+
 ## Resources
 - [gamozolabs](https://www.youtube.com/user/gamozolabs)
 - [javidx9](https://www.youtube.com/channel/UC-yuWVUplUJZvieEligKBkA)
